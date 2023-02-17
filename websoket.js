@@ -1,8 +1,7 @@
 const WebSocket = require('ws');
 const WebSocketServer = WebSocket.Server;
-const config = require('./config');
+const config = require('./config/main.json');
 
-// local
 const wss = new WebSocketServer({ port: config.PORT })
 
 // Define a global variable to store the last block data
