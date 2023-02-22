@@ -5,6 +5,8 @@ const { normalize } = require('./utils');
 
 const wss = new WebSocketServer({ port: config.PORT })
 
+console.log({config})
+
 // Define a global variable to store the last block data
 const lastBlock = {
   code: '',
@@ -28,7 +30,7 @@ wss.on('connection', function connection(ws) {
     lastBlock.code = validData.code
     lastBlock.projectId = validData.projectid
 
-    console.log('Updated last block data: ', lastBlock)
+    console.log('Updated last block: ', lastBlock)
 
     // Send the updated value of the last block data to all connected clients
     wss.clients.forEach(function each(client) {
@@ -39,4 +41,4 @@ wss.on('connection', function connection(ws) {
   });
 });
 
-console.log('WebSocket server started running on', config.PORT)
+console.log(`\nWebSocket server started running on, port: ${config.PORT} \n`)
