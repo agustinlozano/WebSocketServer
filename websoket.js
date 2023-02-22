@@ -18,19 +18,35 @@ wss.on('connection', function connection(ws) {
   // Send the current value of the last block data to the client
   ws.send(JSON.stringify(lastBlock));
 
+  const interval = setInterval(() => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.ping()
+    }
+  }, 30000)
+
+  ws.on('pong', () => {
+    console.log('pong, client is alive')
+  })
+
+  ws.on('close', () => {
+    clearInterval(interval)
+  })
+
   // Handle incoming messages
   ws.on('message', function incoming(data) {
     // Update the last block data
     const newData = JSON.parse(data)
     const validData = normalize(newData)
 
-    // console.log('Received data: ', validData)
+    if (!validData) {
+      throw new Error('Invalid data')
+    }
+
+    console.log('\nReceived data: ', validData)
 
     // lastBlock.set(validData)
     lastBlock.code = validData.code
     lastBlock.projectId = validData.projectid
-
-    console.log('Updated last block: ', lastBlock)
 
     // Send the updated value of the last block data to all connected clients
     wss.clients.forEach(function each(client) {
